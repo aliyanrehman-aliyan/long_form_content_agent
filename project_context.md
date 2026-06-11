@@ -139,7 +139,7 @@ supabase.functions.invoke('auto-generate-content', { body })
   - `ag_long_form_content`
 - Function inserts generated articles into:
   - `ag_long_form_content.content_posts`
-- It schedules generated articles one per day for the next seven days.
+- It schedules generated articles one per day after the selected project's latest existing `publish_at` date, so newly approved pipeline posts continue after the current schedule instead of restarting from today/tomorrow.
 - CORS handling was improved:
   - handles `OPTIONS`
   - allows `authorization`, `apikey`, `content-type`, and `x-client-info`

@@ -236,8 +236,8 @@ const normalizeFaqStructure = (blocks: ContentBlock[], title: string) => {
   ];
 };
 
-const getScheduleForIndex = (index: number) => {
-  const nextDate = new Date();
+const getScheduleForIndex = (index: number, latestPublishAt?: string | null) => {
+  const nextDate = latestPublishAt ? new Date(latestPublishAt) : new Date();
   nextDate.setUTCDate(nextDate.getUTCDate() + index + 1);
   const dubaiDate = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Asia/Dubai',
@@ -526,9 +526,11 @@ Deno.serve(async (req) => {
 
     const { data: existingPosts } = await supabase
       .from('content_posts')
-      .select('slug')
-      .eq('project_id', projectId);
+      .select('slug,publish_at')
+      .eq('project_id', projectId)
+      .order('publish_at', { ascending: false, nullsFirst: false });
     const usedSlugs = new Set((existingPosts || []).map((post: any) => post.slug));
+    const latestPublishAt = (existingPosts || []).find((post: any) => post.publish_at)?.publish_at || null;
     const articles = [];
 
     for (const [index, suggestion] of approvedSuggestions.entries()) {
@@ -536,7 +538,7 @@ Deno.serve(async (req) => {
         const result = await callOpenAiJson(buildArticlePrompt(context, suggestion));
         const title = String(result.title_en || suggestion.title || '').trim();
         const slug = makeUniqueSlug(String(result.slug || title), usedSlugs);
-        const publishAt = getScheduleForIndex(index);
+        const publishAt = getScheduleForIndex(index, latestPublishAt);
         const categoryIds = await resolveCategoryIds(
           supabase,
           projectId,
