@@ -8,6 +8,7 @@ import {
   ArrowRight,
   Globe
 } from 'lucide-react';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface BlogDetailProps {
   post: Post;
@@ -146,10 +147,13 @@ const BlogDetail: React.FC<BlogDetailProps> = ({ post, category, allPosts, onBac
       {/* Related Articles Section */}
       <div className="max-w-4xl mx-auto mt-24 px-4">
         <div className="text-center mb-12">
-          <h2 className="text-2xl font-black text-slate-900 inline-block relative">
-            Related Articles
-            <div className="absolute -bottom-2 left-0 right-0 h-1 bg-amber-500 mx-auto w-12 rounded-full" />
-          </h2>
+          <div className="inline-flex items-center gap-2">
+            <h2 className="text-2xl font-black text-slate-900 inline-block relative">
+              Related Articles
+              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-amber-500 mx-auto w-12 rounded-full" />
+            </h2>
+            <InfoTooltip content="Highlights other posts available for reader preview and navigation." />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

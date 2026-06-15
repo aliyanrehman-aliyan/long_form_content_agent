@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { supabase, supabaseSchema } from '../supabaseClient';
 import { Project } from '../types';
+import InfoTooltip from '../components/InfoTooltip';
 
 type SuggestionState = 'pending' | 'approved' | 'rejected';
 type ArticleStatus = 'Draft' | 'Scheduled' | 'Published' | 'Failed';
@@ -334,7 +335,10 @@ const AutoGenerate: React.FC<AutoGenerateProps> = ({ project }) => {
       <div className="max-w-6xl mx-auto animate-in fade-in duration-500">
         <div className="bg-white border border-slate-100 rounded-2xl p-8 shadow-sm text-center">
           <Sparkles className="w-9 h-9 text-slate-300 mx-auto mb-3" />
-          <h2 className="text-lg font-black text-slate-900">Select a project first</h2>
+          <div className="flex items-center justify-center gap-2">
+            <h2 className="text-lg font-black text-slate-900">Select a project first</h2>
+            <InfoTooltip content="Choose an active project so Auto Generate can use its saved niche, tone, tags, and location." />
+          </div>
           <p className="text-xs text-slate-500 mt-1">Auto Generate uses the active project's saved configuration.</p>
         </div>
       </div>
@@ -345,7 +349,10 @@ const AutoGenerate: React.FC<AutoGenerateProps> = ({ project }) => {
     <div className="max-w-6xl mx-auto animate-in fade-in duration-500 space-y-4">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-black text-slate-900">Auto Generate</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-black text-slate-900">Auto Generate</h2>
+            <InfoTooltip content="Generate SEO topic suggestions, approve topics, and create scheduled articles through the Edge Function." />
+          </div>
           <p className="text-sm text-slate-500">Approve SEO topics once and prepare scheduled articles automatically.</p>
         </div>
         <div className="flex flex-wrap gap-2 text-[10px] font-bold text-slate-500">
@@ -389,7 +396,10 @@ const AutoGenerate: React.FC<AutoGenerateProps> = ({ project }) => {
         <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm min-h-[520px]">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
             <div>
-              <h3 className="text-sm font-black text-slate-900">AI Topic Suggestions</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-black text-slate-900">AI Topic Suggestions</h3>
+                <InfoTooltip content="Create, approve, reject, or replace topic ideas before article generation starts." />
+              </div>
               <p className="text-xs text-slate-500">OpenAI runs through the `auto-generate-content` Edge Function.</p>
             </div>
             <div className="flex items-center gap-2">
@@ -455,7 +465,10 @@ const AutoGenerate: React.FC<AutoGenerateProps> = ({ project }) => {
         </div>
 
         <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
-          <h3 className="text-sm font-black text-slate-900">Pipeline Status</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-black text-slate-900">Pipeline Status</h3>
+            <InfoTooltip content="Tracks approved topics, generated article status, and scheduling progress." />
+          </div>
           <p className="text-xs text-slate-500 mt-1">{approvedSuggestions.length} approved topic{approvedSuggestions.length === 1 ? '' : 's'} ready.</p>
           <button
             type="button"

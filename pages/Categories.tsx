@@ -13,6 +13,7 @@ import {
   Eye,
   X
 } from 'lucide-react';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface CategoriesPageProps {
   categories: Category[];
@@ -80,7 +81,10 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ categories, posts, proj
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Content Categories</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-800">Content Categories</h2>
+            <InfoTooltip content="Organize posts into reusable project-specific topics and category groups." />
+          </div>
           <p className="text-slate-500">Organize your content into project-specific topics</p>
         </div>
         <button 
@@ -176,7 +180,10 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ categories, posts, proj
           <div className="bg-white rounded-[2rem] w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 border-b border-slate-50 flex items-center justify-between">
               <div>
-                <h3 className="text-2xl font-bold text-slate-800">{editingCategory ? 'Edit Category' : 'New Category'}</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-2xl font-bold text-slate-800">{editingCategory ? 'Edit Category' : 'New Category'}</h3>
+                  <InfoTooltip content="Create or update a category used to group related posts." />
+                </div>
                 <p className="text-slate-500 text-sm">Define a new topic for your project</p>
               </div>
               <button onClick={() => setShowModal(false)} className="p-2 hover:bg-slate-50 rounded-full text-slate-400">

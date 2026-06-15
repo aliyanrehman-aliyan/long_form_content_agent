@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { Globe, Loader2, Lock, Mail } from 'lucide-react';
+import InfoTooltip from './InfoTooltip';
 
 const Auth: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,10 @@ const Auth: React.FC = () => {
           <div className="bg-white/20 p-4 rounded-3xl inline-block mb-6 backdrop-blur-sm">
             <Globe className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-black tracking-tight mb-2">Blog Management System</h1>
+          <div className="mb-2 flex items-center justify-center gap-2">
+            <h1 className="text-3xl font-black tracking-tight">Blog Management System</h1>
+            <InfoTooltip content="Sign in to access project content management and publishing tools." />
+          </div>
           <p className="text-indigo-100 font-medium">Dubai's Multi-Project Blog Manager</p>
         </div>
         

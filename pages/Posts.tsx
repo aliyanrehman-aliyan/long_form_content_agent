@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Clock
 } from 'lucide-react';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface PostsProps {
   posts: Post[];
@@ -37,7 +38,10 @@ const Posts: React.FC<PostsProps> = ({ posts, categories, projectName, onDelete,
     <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">{projectName} Posts</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-800">{projectName} Posts</h2>
+            <InfoTooltip content="Review, edit, publish, and manage posts for the active project." />
+          </div>
           <p className="text-slate-500">Manage, edit and publish your content</p>
         </div>
         <div className="flex items-center gap-4">

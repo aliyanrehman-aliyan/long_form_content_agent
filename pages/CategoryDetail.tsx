@@ -13,6 +13,7 @@ import {
   AlertCircle 
 } from 'lucide-react';
 import BlogDetail from './BlogDetail';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface CategoryDetailProps {
   category: Category;
@@ -61,6 +62,7 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ category, posts, allPos
                 <Layers className="w-6 h-6" />
               </div>
               <h2 className="text-3xl font-black text-slate-800 tracking-tight">{category.name}</h2>
+              <InfoTooltip content="View, filter, and manage posts assigned to this category." />
               <span className={`ml-2 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                 category.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'
               }`}>

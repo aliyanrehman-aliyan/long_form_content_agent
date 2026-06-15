@@ -22,6 +22,7 @@ import {
   Bar,
   Cell
 } from 'recharts';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface DashboardProps {
   project: Project;
@@ -58,7 +59,10 @@ const Dashboard: React.FC<DashboardProps> = ({ project, posts, onCreatePost }) =
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">{project.name} Overview</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-800">{project.name} Overview</h2>
+            <InfoTooltip content="Summarizes project activity, content performance, and recent work." />
+          </div>
           <p className="text-slate-500">Performance insights for {project.websiteUrl}</p>
         </div>
         <div className="flex gap-3">
@@ -98,7 +102,10 @@ const Dashboard: React.FC<DashboardProps> = ({ project, posts, onCreatePost }) =
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="font-bold text-slate-800">Traffic Analysis</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-slate-800">Traffic Analysis</h3>
+              <InfoTooltip content="Shows recent views and visits for the project content." />
+            </div>
             <select className="bg-slate-50 border-none text-xs font-bold text-slate-500 rounded-lg px-2 py-1 outline-none cursor-pointer">
               <option>Last 7 Days</option>
               <option>Last 30 Days</option>
@@ -127,7 +134,10 @@ const Dashboard: React.FC<DashboardProps> = ({ project, posts, onCreatePost }) =
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
-          <h3 className="font-bold text-slate-800 mb-6">Popular Categories</h3>
+          <div className="mb-6 flex items-center gap-2">
+            <h3 className="font-bold text-slate-800">Popular Categories</h3>
+            <InfoTooltip content="Highlights category groups with the most content activity." />
+          </div>
           <div className="flex-1 min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={CATEGORY_DATA} layout="vertical">
@@ -154,7 +164,10 @@ const Dashboard: React.FC<DashboardProps> = ({ project, posts, onCreatePost }) =
       {/* Recent Posts Snippet */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-          <h3 className="font-bold text-slate-800">Recent Posts</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="font-bold text-slate-800">Recent Posts</h3>
+            <InfoTooltip content="Lists the newest posts in this project for quick review." />
+          </div>
           <button className="text-sm font-medium text-indigo-600 hover:text-indigo-700">View All</button>
         </div>
         <div className="divide-y divide-slate-50">

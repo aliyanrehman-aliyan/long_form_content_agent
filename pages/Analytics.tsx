@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Category, Post, PostStatus, Project } from '../types';
 import BlogDetail from './BlogDetail';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface AnalyticsProps {
   project: Project;
@@ -64,7 +65,10 @@ const Analytics: React.FC<AnalyticsProps> = ({ project, posts, categories }) => 
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">{project.name} Analytics</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-800">{project.name} Analytics</h2>
+            <InfoTooltip content="Track content status, review output, and monitor project-level publishing progress." />
+          </div>
           <p className="text-slate-500">Review generated content, published output, and project-specific performance.</p>
         </div>
         <div className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-500 uppercase tracking-widest">
@@ -89,7 +93,10 @@ const Analytics: React.FC<AnalyticsProps> = ({ project, posts, categories }) => 
 
         <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-slate-800">Publishing Mix</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-slate-800">Publishing Mix</h3>
+              <InfoTooltip content="Shows how posts are split across published, scheduled, and draft states." />
+            </div>
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</span>
           </div>
 
@@ -116,7 +123,10 @@ const Analytics: React.FC<AnalyticsProps> = ({ project, posts, categories }) => 
       <section className="space-y-5 bg-white border border-slate-100 rounded-2xl shadow-sm p-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <h3 className="text-xl font-black text-slate-800">Content Review</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xl font-black text-slate-800">Content Review</h3>
+              <InfoTooltip content="Search, filter, preview, and inspect posts created for this project." />
+            </div>
             <p className="text-sm text-slate-500">Preview generated and published content for the selected project.</p>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">

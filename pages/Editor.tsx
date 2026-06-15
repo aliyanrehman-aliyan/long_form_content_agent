@@ -28,6 +28,7 @@ import {
 import { Post, ContentBlock, SEOData, PostStatus, Project, Category } from "../types";
 import { supabase } from "../supabaseClient";
 import contentWritingSkill from "../skills/content-writing.md?raw";
+import InfoTooltip from "../components/InfoTooltip";
 
 interface EditorProps {
   post: Post | null;
@@ -593,7 +594,10 @@ const Editor: React.FC<EditorProps> = ({ post, project, categories, onSave, onCa
           <div className="bg-white rounded-[2.5rem] w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 border-b border-slate-50 flex items-center justify-between">
               <div>
-                <h3 className="text-2xl font-bold text-slate-800">Schedule Post</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-2xl font-bold text-slate-800">Schedule Post</h3>
+                  <InfoTooltip content="Set the date and time when this post should be scheduled." />
+                </div>
                 <p className="text-slate-500 text-xs mt-1">Set a future publication date and time</p>
               </div>
               <button onClick={() => setIsScheduleModalOpen(false)} className="p-2 hover:bg-slate-50 rounded-full text-slate-400 transition-colors">
@@ -648,7 +652,10 @@ const Editor: React.FC<EditorProps> = ({ post, project, categories, onSave, onCa
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h2 className="text-xl font-bold text-slate-800">{post ? "Edit Post" : "New Content Post"}</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold text-slate-800">{post ? "Edit Post" : "New Content Post"}</h2>
+              <InfoTooltip content="Create or edit a post, including metadata, content blocks, SEO, and scheduling." />
+            </div>
             <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">Project: {project.name}</p>
           </div>
         </div>
@@ -719,9 +726,12 @@ const Editor: React.FC<EditorProps> = ({ post, project, categories, onSave, onCa
                 {!post && (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">
-                        AI Suggested Topics
-                      </h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">
+                          AI Suggested Topics
+                        </h3>
+                        <InfoTooltip content="Generate topic ideas using the current project and post context." />
+                      </div>
                       <button
                         onClick={fetchSuggestions}
                         disabled={isGeneratingSuggestions}
@@ -760,7 +770,10 @@ const Editor: React.FC<EditorProps> = ({ post, project, categories, onSave, onCa
                 )}
 
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-slate-800">Basic Information</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-slate-800">Basic Information</h3>
+                    <InfoTooltip content="Edit the title, slug, excerpt, categories, tags, and featured image." />
+                  </div>
                   <button
                     onClick={generateFullPost}
                     disabled={isGeneratingContent || !title}
@@ -910,7 +923,10 @@ const Editor: React.FC<EditorProps> = ({ post, project, categories, onSave, onCa
               <div className="max-w-4xl space-y-6 animate-in fade-in duration-300">
                 <div className="flex items-center justify-between mb-8">
                   <div>
-                    <h3 className="text-lg font-bold text-slate-800">Content Blocks ({activeTab === "en" ? "English" : "Arabic"})</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-slate-800">Content Blocks ({activeTab === "en" ? "English" : "Arabic"})</h3>
+                      <InfoTooltip content="Build the post body from reusable headings, paragraphs, and bullet lists." />
+                    </div>
                     <p className="text-sm text-slate-400">Build your blog content using headings, paragraphs, and bullet lists</p>
                   </div>
                 </div>
@@ -981,6 +997,7 @@ const Editor: React.FC<EditorProps> = ({ post, project, categories, onSave, onCa
                   <div className="space-y-6 bg-slate-50 border border-slate-100 p-8 rounded-[2rem] shadow-sm">
                     <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
                       <BookOpen className="w-5 h-5 text-indigo-600" /> Readability Analysis
+                      <InfoTooltip content="Checks structure, sentence length, paragraph flow, and scan-friendly formatting." />
                     </h3>
                     <div className="space-y-4">
                       {readabilityChecks.map((check) => (
@@ -1003,7 +1020,10 @@ const Editor: React.FC<EditorProps> = ({ post, project, categories, onSave, onCa
                   </div>
 
                   <div className="space-y-6">
-                    <h3 className="text-lg font-bold text-slate-800">SEO Configuration</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-slate-800">SEO Configuration</h3>
+                      <InfoTooltip content="Set the focus keyword, SEO title, and meta description for search previews." />
+                    </div>
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <label className="text-xs font-black text-slate-400 uppercase tracking-widest block ml-1">Focus Keyword</label>
@@ -1041,6 +1061,7 @@ const Editor: React.FC<EditorProps> = ({ post, project, categories, onSave, onCa
           <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
             <h3 className="font-bold text-slate-800 mb-6 flex items-center gap-2">
               <Settings className="w-5 h-5 text-[#6366F1]" /> Content Health Score
+              <InfoTooltip content="Combines SEO and readability checks into an overall optimization score." />
             </h3>
             <div className="flex items-center justify-center mb-8">
               <div className="relative w-36 h-36 flex items-center justify-center">

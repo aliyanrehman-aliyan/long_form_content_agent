@@ -1,5 +1,44 @@
 # Project Context
 
+## Latest Session Updates - June 16, 2026
+
+This section is the newest source of truth for recent Codex work in this chat.
+Older sections may still describe previous behavior where noted.
+
+### Contextual Help Icons
+
+- Added reusable component:
+  - `components/InfoTooltip.tsx`
+- The component renders a compact `i` icon and shows a short tooltip/popover on hover, keyboard focus, or click.
+- Added contextual help icons beside major page titles and section headers across:
+  - Settings
+  - Customer Workspace / Posts
+  - Analytics
+  - Auto Generate
+  - Projects
+  - Categories and Category Detail
+  - Calendar
+  - Media Library
+  - Dashboard / Overview
+  - Content Review Center
+  - Editor
+  - Blog Detail related articles
+  - Supabase SQL reference
+  - Auth screen
+- No data flow, routing, database calls, or existing page functionality was changed for this UI help pass.
+
+### Supabase Schema Selection
+
+- `supabaseClient.ts` currently supports `VITE_SUPABASE_SCHEMA`.
+- Allowed schema values:
+  - `ag_long_form_content`
+  - `ag_long_form_content_dev`
+  - `ag_long_form_content_test`
+- If `VITE_SUPABASE_SCHEMA` is not set, the app defaults to production schema `ag_long_form_content`.
+- Auto Generate passes the resolved schema as `targetSchema` to the `auto-generate-content` Edge Function.
+- The Edge Function validates the requested schema before writing generated content.
+- Dev/test schema clone migrations currently exist under `supabase/migrations/`.
+
 ## Latest Session Updates - June 8, 2026
 
 This section is the newest source of truth for recent Codex work in this chat.

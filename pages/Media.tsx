@@ -13,9 +13,9 @@ import {
   Image as ImageIcon,
   FileIcon,
   Download,
-  Info,
   PenLine
 } from 'lucide-react';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface MediaPageProps {
   assets: MediaAsset[];
@@ -69,7 +69,10 @@ const MediaPage: React.FC<MediaPageProps> = ({ assets, onUpload, onDelete, onEdi
     <div className="space-y-6 animate-in fade-in duration-500 relative h-full flex flex-col">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Media Library</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-800">Media Library</h2>
+            <InfoTooltip content="Upload, search, and manage images and reusable assets for posts." />
+          </div>
           <p className="text-slate-500">Manage images and assets for your blog project</p>
         </div>
         <div className="flex gap-3">
@@ -165,7 +168,10 @@ const MediaPage: React.FC<MediaPageProps> = ({ assets, onUpload, onDelete, onEdi
       {selectedAsset && (
         <div className="absolute top-0 right-0 w-80 h-full bg-white border-l border-slate-100 shadow-2xl animate-in slide-in-from-right duration-300 z-20 flex flex-col">
           <div className="p-6 border-b border-slate-50 flex items-center justify-between">
-            <h3 className="font-bold text-slate-800">Media Details</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-slate-800">Media Details</h3>
+              <InfoTooltip content="Inspect the selected asset, copy its URL, or see where it is used." />
+            </div>
             <button onClick={() => setSelectedAsset(null)} className="p-2 hover:bg-slate-50 rounded-full text-slate-400">
               <X className="w-5 h-5" />
             </button>
@@ -197,7 +203,10 @@ const MediaPage: React.FC<MediaPageProps> = ({ assets, onUpload, onDelete, onEdi
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Public URL</label>
+              <div className="flex items-center gap-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Public URL</label>
+                <InfoTooltip content="Copy the asset URL for use inside post content or external publishing." />
+              </div>
               <div className="flex items-center gap-2">
                 <input 
                   readOnly
@@ -214,7 +223,10 @@ const MediaPage: React.FC<MediaPageProps> = ({ assets, onUpload, onDelete, onEdi
             </div>
 
             <div className="pt-6 border-t border-slate-50">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Used In</label>
+              <div className="mb-3 flex items-center gap-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Used In</label>
+                <InfoTooltip content="Lists posts currently referencing this media asset." />
+              </div>
               <div className="space-y-2">
                 {selectedAsset.usedInPosts.map((postTitle, i) => (
                   <div key={i} className="flex items-center justify-between gap-2 text-xs font-bold text-slate-600 bg-slate-50 p-2 rounded-lg group/item">

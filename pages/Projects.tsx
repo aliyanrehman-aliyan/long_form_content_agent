@@ -22,6 +22,7 @@ import {
   X,
   Type
 } from 'lucide-react';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface ProjectsPageProps {
   projects: Project[];
@@ -105,7 +106,10 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects, activeProjectId, 
     <div className="space-y-8 max-w-6xl mx-auto animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Your Projects</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-800">Your Projects</h2>
+            <InfoTooltip content="Create, select, and configure the projects that organize your content workspace." />
+          </div>
           <p className="text-slate-500">Manage multiple blog entities and their specific configurations</p>
         </div>
         <button 
@@ -200,7 +204,10 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects, activeProjectId, 
                   <div className="bg-indigo-100 p-2.5 rounded-2xl">
                     <Settings2 className="w-6 h-6 text-indigo-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-800">{editingProject.name} Settings</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-2xl font-bold text-slate-800">{editingProject.name} Settings</h3>
+                    <InfoTooltip content="Update the selected project's basic details and delivery preferences." />
+                  </div>
                 </div>
                 <button onClick={() => setEditingProject(null)} className="p-2 hover:bg-slate-50 rounded-full text-slate-400">
                   <X className="w-6 h-6" />
@@ -212,7 +219,10 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects, activeProjectId, 
             <form onSubmit={handleUpdateProjectSettings} className="p-10 pt-0 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
               {/* General Info */}
               <div className="space-y-4">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">General Information</label>
+                <div className="flex items-center gap-2">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">General Information</label>
+                  <InfoTooltip content="Project name, location, and niche identify the content context." />
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-slate-400 uppercase">Project Name</label>
@@ -243,7 +253,10 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects, activeProjectId, 
 
               {/* Connector Config */}
               <div className="space-y-4">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Publishing Strategy</label>
+                <div className="flex items-center gap-2">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Publishing Strategy</label>
+                  <InfoTooltip content="Choose how completed project posts should be delivered or shared." />
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <button
                     type="button"
@@ -361,7 +374,10 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects, activeProjectId, 
           <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 border-b border-slate-50 flex items-center justify-between">
               <div>
-                <h3 className="text-2xl font-bold text-slate-800">Create Project</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-2xl font-bold text-slate-800">Create Project</h3>
+                  <InfoTooltip content="Add a new website or business profile to manage content separately." />
+                </div>
                 <p className="text-slate-500 text-xs mt-1">Add a new website to Long Form Content Agent</p>
               </div>
               <button onClick={() => setShowAddModal(false)} className="p-2 hover:bg-slate-50 rounded-full text-slate-400 transition-colors">

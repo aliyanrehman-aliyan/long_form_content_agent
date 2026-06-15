@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface CalendarProps {
   posts: Post[];
@@ -80,7 +81,10 @@ const Calendar: React.FC<CalendarProps> = ({ posts, onEditPost }) => {
     <div className="space-y-6 animate-in fade-in duration-500 h-full flex flex-col overflow-hidden">
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Content Calendar</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-800">Content Calendar</h2>
+            <InfoTooltip content="View scheduled, draft, and published posts by calendar date." />
+          </div>
           <p className="text-slate-500 text-sm">Plan and track your posting schedule visually</p>
         </div>
         <div className="flex items-center gap-4 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
@@ -153,6 +157,7 @@ const Calendar: React.FC<CalendarProps> = ({ posts, onEditPost }) => {
           <h3 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2 shrink-0">
             <Clock className="w-4 h-4 text-indigo-600" />
             {selectedDay ? monthNames[selectedDay.getMonth()] + ' ' + selectedDay.getDate() : 'Select a date'}
+            <InfoTooltip content="Shows the posts planned for the selected calendar day." />
           </h3>
 
           {!selectedDay ? (
@@ -199,7 +204,10 @@ const Calendar: React.FC<CalendarProps> = ({ posts, onEditPost }) => {
           )}
 
           <div className="mt-4 space-y-2 pt-4 border-t border-slate-50 shrink-0">
-            <h4 className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Legend</h4>
+            <div className="flex items-center gap-2">
+              <h4 className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Legend</h4>
+              <InfoTooltip content="Explains the color dots used for post status on the calendar." />
+            </div>
             <div className="flex items-center gap-3 text-[11px] font-bold text-slate-600">
               <div className="w-2 h-2 rounded-full bg-indigo-400" /> Drafts
             </div>

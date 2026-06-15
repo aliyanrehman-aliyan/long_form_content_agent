@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Copy, Check, Database, Code, Download, Info, Globe, Clock, Shield } from 'lucide-react';
+import InfoTooltip from '../components/InfoTooltip';
 
 const SupabaseSQL: React.FC = () => {
   const [copied, setCopied] = useState(false);
@@ -146,7 +147,10 @@ CREATE TRIGGER tr_update_posts_ts BEFORE UPDATE ON blog_posts FOR EACH ROW EXECU
             <Database className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">Supabase SQL Schema</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-bold text-slate-800">Supabase SQL Schema</h2>
+              <InfoTooltip content="Reference SQL for the app's database structure and setup notes." />
+            </div>
             <p className="text-slate-500">Accurate database architecture matching your current app logic</p>
           </div>
         </div>

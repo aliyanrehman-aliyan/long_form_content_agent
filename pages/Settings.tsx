@@ -18,6 +18,7 @@ import {
   Type
 } from 'lucide-react';
 import { Project } from '../types';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface SettingsProps {
   project: Project | null;
@@ -63,6 +64,12 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
     { id: 'details', title: 'Content Configuration', description: 'Project and content fields', icon: Target },
     { id: 'method', title: 'Method', description: 'Delivery preferences', icon: Database }
   ];
+  const activeStepHelp =
+    activeStep === 'profile'
+      ? 'Introduces the selected project and summarizes the workspace purpose.'
+      : activeStep === 'details'
+        ? 'Stores the project context used for content generation, targeting, and review.'
+        : 'Controls how completed content is delivered after generation.';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,6 +134,12 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
   const labelClass = 'text-[9px] font-black text-slate-400 uppercase tracking-widest';
   const compactCard = 'bg-white border border-slate-100 rounded-2xl p-4 shadow-sm';
   const denseCard = 'bg-white border border-slate-100 rounded-2xl p-3 shadow-sm';
+  const renderFieldLabel = (label: string, help: string) => (
+    <div className="flex items-center gap-1.5">
+      <label className={labelClass}>{label}</label>
+      <InfoTooltip size="sm" content={help} />
+    </div>
+  );
   const currentIndex = steps.findIndex(step => step.id === activeStep);
 
   useEffect(() => {
@@ -202,11 +215,14 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
                 {activeStep === 'method' && <Database className="w-4 h-4" />}
               </div>
               <div>
-                <h1 className="text-xl font-black text-slate-900 leading-tight">
-                  {activeStep === 'profile' && 'Business Profile'}
-                  {activeStep === 'details' && 'Content Configuration'}
-                  {activeStep === 'method' && 'Method'}
-                </h1>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl font-black text-slate-900 leading-tight">
+                    {activeStep === 'profile' && 'Business Profile'}
+                    {activeStep === 'details' && 'Content Configuration'}
+                    {activeStep === 'method' && 'Method'}
+                  </h1>
+                  <InfoTooltip content={activeStepHelp} />
+                </div>
                 <p className="text-xs text-slate-500 mt-1">
                   {activeStep === 'profile' && (isOnboarding ? 'Create the business profile for a new project.' : 'Edit the business profile for this project.')}
                   {activeStep === 'details' && 'Edit the project context used for content generation and management.'}
@@ -228,7 +244,10 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
                 <div className={compactCard}>
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                     <div>
-                      <h3 className="text-base font-black text-slate-900">{isOnboarding ? 'Set up a new project' : `Welcome to ${displayName}`}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base font-black text-slate-900">{isOnboarding ? 'Set up a new project' : `Welcome to ${displayName}`}</h3>
+                        <InfoTooltip content="Summarizes the active project and the main content workflow areas." />
+                      </div>
                       <p className="text-xs text-slate-500 leading-relaxed mt-1 max-w-3xl">
                         Long Form Content Agent helps your team generate, organize, manage, schedule, and review long-form content for the selected project.
                       </p>
@@ -249,27 +268,39 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
                     <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
                       <Sparkles className="w-4 h-4" />
                     </div>
-                    <h4 className="text-sm font-bold text-slate-900 mb-1.5">Content Generation</h4>
+                    <div className="mb-1.5 flex items-center gap-2">
+                      <h4 className="text-sm font-bold text-slate-900">Content Generation</h4>
+                      <InfoTooltip content="Explains the tools used to create topic ideas, drafts, and SEO-ready content." />
+                    </div>
                     <p className="text-xs text-slate-500 leading-relaxed">Create topic ideas, drafts, SEO metadata, and structured long-form posts.</p>
                   </div>
                   <div className={compactCard}>
                     <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
                       <PenLine className="w-4 h-4" />
                     </div>
-                    <h4 className="text-sm font-bold text-slate-900 mb-1.5">Content Management</h4>
+                    <div className="mb-1.5 flex items-center gap-2">
+                      <h4 className="text-sm font-bold text-slate-900">Content Management</h4>
+                      <InfoTooltip content="Covers post organization, category assignment, scheduling, and review workflows." />
+                    </div>
                     <p className="text-xs text-slate-500 leading-relaxed">Manage posts, categories, calendar planning, and publishing workflow in one workspace.</p>
                   </div>
                   <div className={compactCard}>
                     <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
                       <BookOpen className="w-4 h-4" />
                     </div>
-                    <h4 className="text-sm font-bold text-slate-900 mb-1.5">Project Context</h4>
+                    <div className="mb-1.5 flex items-center gap-2">
+                      <h4 className="text-sm font-bold text-slate-900">Project Context</h4>
+                      <InfoTooltip content="Keeps tone, niche, tags, and location aligned for this project." />
+                    </div>
                     <p className="text-xs text-slate-500 leading-relaxed">Use each project profile to keep tone, niche, tags, and location aligned.</p>
                   </div>
                 </div>
 
                 <div className={compactCard}>
-                  <h4 className="text-sm font-bold text-slate-900 mb-1.5">Current Business Context</h4>
+                  <div className="mb-1.5 flex items-center gap-2">
+                    <h4 className="text-sm font-bold text-slate-900">Current Business Context</h4>
+                    <InfoTooltip content="Shows the saved niche, location, and tone that guide generated content." />
+                  </div>
                   <p className="text-xs text-slate-500 leading-relaxed">
                     {formData.niche || 'No niche set'} content for {formData.location || 'No location set'}, written in a {formData.tone || 'Professional'} tone.
                   </p>
@@ -280,18 +311,21 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
             {activeStep === 'details' && (
               <div className="space-y-3 max-w-5xl">
                 <div className={denseCard}>
-                  <h3 className="text-sm font-bold text-slate-900 mb-0.5">Content Profile</h3>
+                  <div className="mb-0.5 flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-slate-900">Content Profile</h3>
+                    <InfoTooltip content="Defines the project fields used by manual and automatic content generation." />
+                  </div>
                   <p className="text-xs text-slate-500">These fields guide content generation, targeting, and review context.</p>
                 </div>
 
                 <div className={`${denseCard} space-y-3`}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className={labelClass}>Project Name</label>
+                      {renderFieldLabel('Project Name', 'The display name used to identify this project across the workspace.')}
                       <input required className={denseInputClass} value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                     </div>
                     <div className="space-y-1">
-                      <label className={labelClass}>Website URL</label>
+                      {renderFieldLabel('Website URL', 'The public website URL associated with this project and its content.')}
                       <div className="relative">
                         <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <input required type="url" className={`${denseInputClass} pl-10`} value={formData.websiteUrl} onChange={e => setFormData({ ...formData, websiteUrl: e.target.value })} />
@@ -301,21 +335,21 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div className="space-y-1">
-                      <label className={labelClass}>Location</label>
+                      {renderFieldLabel('Location', 'The target market or geography used to localize generated content.')}
                       <div className="relative">
                         <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <input required className={`${denseInputClass} pl-10`} value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <label className={labelClass}>Niche</label>
+                      {renderFieldLabel('Niche', 'The main industry, service area, or subject focus for generated content.')}
                       <div className="relative">
                         <Target className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <input required className={`${denseInputClass} pl-10`} value={formData.niche} onChange={e => setFormData({ ...formData, niche: e.target.value })} />
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <label className={labelClass}>Tone</label>
+                      {renderFieldLabel('Tone', 'The writing voice the generator should follow for this project.')}
                       <div className="relative">
                         <Type className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <select className={`${denseInputClass} pl-10 appearance-none`} value={formData.tone} onChange={e => setFormData({ ...formData, tone: e.target.value })}>
@@ -327,12 +361,12 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className={labelClass}>Category</label>
+                      {renderFieldLabel('Category', 'The default content category or topic group for this project.')}
                       <input className={denseInputClass} placeholder="e.g. Healthcare, Real Estate, SaaS..." value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} />
                     </div>
 
                     <div className="space-y-1">
-                      <label className={labelClass}>Target Tags</label>
+                      {renderFieldLabel('Target Tags', 'Comma-separated keywords or tags used to guide topic and article generation.')}
                       <div className="relative">
                         <Tag className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <input className={`${denseInputClass} pl-10`} placeholder="marketing, dubai, medical..." value={formData.tags} onChange={e => setFormData({ ...formData, tags: e.target.value })} />
@@ -346,7 +380,10 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
             {activeStep === 'method' && (
               <div className="space-y-4 max-w-5xl">
                 <div className={compactCard}>
-                  <h3 className="text-sm font-bold text-slate-900 mb-1">Delivery Method</h3>
+                  <div className="mb-1 flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-slate-900">Delivery Method</h3>
+                    <InfoTooltip content="Chooses whether completed posts stay in Supabase or are prepared for email delivery." />
+                  </div>
                   <p className="text-xs text-slate-500">Select how completed posts are delivered after your content workflow.</p>
                 </div>
 

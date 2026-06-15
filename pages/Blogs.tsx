@@ -12,6 +12,7 @@ import {
   Eye,
   ChevronRight
 } from 'lucide-react';
+import InfoTooltip from '../components/InfoTooltip';
 
 interface BlogsPageProps {
   posts: Post[];
@@ -35,7 +36,10 @@ const BlogsPage: React.FC<BlogsPageProps> = ({ posts, categories, onPreview }) =
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Content Review Center</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Content Review Center</h2>
+            <InfoTooltip content="Preview how posts will appear to readers and filter review-ready content." />
+          </div>
           <p className="text-slate-500">View how your content appears to public readers</p>
         </div>
       </div>
