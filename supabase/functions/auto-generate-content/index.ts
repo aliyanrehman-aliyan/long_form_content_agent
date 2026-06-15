@@ -24,11 +24,32 @@ type ContentBlock = {
   content: string | string[];
 };
 
+type AppSchema =
+  | 'ag_long_form_content'
+  | 'ag_long_form_content_dev'
+  | 'ag_long_form_content_test';
+
+const allowedAppSchemas: AppSchema[] = [
+  'ag_long_form_content',
+  'ag_long_form_content_dev',
+  'ag_long_form_content_test',
+];
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Max-Age': '86400',
+};
+
+const resolveTargetSchema = (value: unknown): AppSchema => {
+  const schema = String(value || Deno.env.get('SUPABASE_SCHEMA') || 'ag_long_form_content');
+
+  if (allowedAppSchemas.includes(schema as AppSchema)) {
+    return schema as AppSchema;
+  }
+
+  throw new Error(`Unsupported target schema "${schema}".`);
 };
 
 const contentWritingInstructions = `
@@ -468,8 +489,17 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: 'projectId is required.' }, 400);
     }
 
+    let targetSchema: AppSchema;
+    try {
+      targetSchema = resolveTargetSchema(body.targetSchema);
+    } catch (error) {
+      return jsonResponse({
+        error: error instanceof Error ? error.message : 'Unsupported target schema.',
+      }, 400);
+    }
+
     const supabase = createClient(supabaseUrl, serviceRoleKey, {
-      db: { schema: 'ag_long_form_content' },
+      db: { schema: targetSchema },
     });
 
     const { data: project, error: projectError } = await supabase

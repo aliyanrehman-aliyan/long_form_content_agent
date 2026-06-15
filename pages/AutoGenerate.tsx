@@ -9,7 +9,7 @@ import {
   Sparkles,
   X
 } from 'lucide-react';
-import { supabase } from '../supabaseClient';
+import { supabase, supabaseSchema } from '../supabaseClient';
 import { Project } from '../types';
 
 type SuggestionState = 'pending' | 'approved' | 'rejected';
@@ -126,7 +126,7 @@ const AutoGenerate: React.FC<AutoGenerateProps> = ({ project }) => {
       }
 
       const { data } = await supabase
-        .schema('ag_long_form_content')
+        .schema(supabaseSchema)
         .from('content_posts')
         .select('id,title_en,status,publish_at')
         .eq('project_id', project.id)
@@ -149,6 +149,7 @@ const AutoGenerate: React.FC<AutoGenerateProps> = ({ project }) => {
   const invokeAutoGenerate = async (payload: Record<string, any>) => {
     const body = {
       projectId: project?.id,
+      targetSchema: supabaseSchema,
       nicheOverride: nicheOverride.trim() || undefined,
       locationOverride: locationOverride.trim() || undefined,
       ...payload
