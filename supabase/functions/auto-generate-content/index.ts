@@ -15,6 +15,7 @@ type ProjectContext = {
   category: string;
   location: string;
   tone: string;
+  contentType: string;
   businessContext: string;
   targetTags: string;
 };
@@ -52,9 +53,55 @@ const resolveTargetSchema = (value: unknown): AppSchema => {
   throw new Error(`Unsupported target schema "${schema}".`);
 };
 
+const allowedContentTypes = [
+  'blog_article',
+  'faq',
+  'landing_page_content',
+  'service_page',
+  'product_description',
+  'case_study',
+  'general_content',
+];
+
+const resolveContentType = (value: unknown) => {
+  const contentType = String(value || 'blog_article');
+  return allowedContentTypes.includes(contentType) ? contentType : 'blog_article';
+};
+
+const formatContentType = (value: string) => ({
+  blog_article: 'Blog Article',
+  faq: 'FAQ',
+  landing_page_content: 'Landing Page Content',
+  service_page: 'Service Page',
+  product_description: 'Product Description',
+  case_study: 'Case Study',
+  general_content: 'General Content',
+}[value] || 'Blog Article');
+
+const contentTypeGuidance = (value: string) => ({
+  blog_article: 'Create only a long-form SEO blog article with an introduction, useful article sections, FAQ, and conclusion. Do not create FAQ-only, landing page, service page, product, case study, or generic page copy.',
+  faq: 'Create only FAQ-style content. Use clear question headings with practical answers. Do not create a blog article, landing page, service page, product description, case study, or mixed format.',
+  landing_page_content: 'Create only landing page content with a conversion-focused hero/opening, value proposition, benefits, proof points, FAQ, and CTA-friendly conclusion. Do not create a blog article or FAQ-only page.',
+  service_page: 'Create only service page content that explains the service, who it helps, benefits, process, FAQ, and next-step CTA. Do not create a blog article, product description, case study, or FAQ-only page.',
+  product_description: 'Create only product description content with product overview, benefits, key features, practical use cases, FAQ, and buying guidance. Do not create a blog article, service page, case study, or FAQ-only page.',
+  case_study: 'Create only case study content with background, challenge, solution, implementation, results, lessons, FAQ, and conclusion. Do not create a blog article, landing page, service page, product description, or FAQ-only page.',
+  general_content: 'Create only general informational content that fits the topic and project context. Do not switch into a blog article, landing page, service page, product description, case study, or FAQ-only format unless that is explicitly the selected type.',
+}[value] || 'Create structured content that fits the selected topic and project context.');
+
+const strictContentTypeContract = (value: string) => `
+STRICT CONTENT TYPE CONTRACT:
+- The selected content_type is "${value}" (${formatContentType(value)}).
+- Generate only ${formatContentType(value)} content.
+- Do not mix, combine, or switch to any other content type.
+- If the topic could work as another format, still produce only the selected content type.
+- Suggestions, titles, descriptions, SEO metadata, and all content blocks must match ${formatContentType(value)}.
+`.trim();
+
 const contentWritingInstructions = `
 Use a professional, simple, easy-to-read tone.
-Structure each article with an introduction, clear main sections, an FAQ section before the conclusion, and a conclusion at the end.
+Follow the selected content type exactly before applying any general writing pattern.
+Use clear headings, focused paragraphs, and bullet lists where helpful.
+When the selected content type includes an FAQ section, follow these FAQ rules.
 Use clear headings, focused paragraphs, and bullet lists where helpful outside the FAQ section.
 The FAQ heading must always be exactly "FAQ".
 Each FAQ question must be plain heading text without markdown hash symbols and must be on its own line.
@@ -371,7 +418,7 @@ const filterUniqueSuggestions = (suggestions: unknown[], excludeTitles: string[]
 };
 
 const buildSuggestionPrompt = (context: ProjectContext, count: number, excludeTitles: string[]) => `
-Generate ${count} high-quality SEO blog topic suggestion${count === 1 ? '' : 's'}.
+Generate ${count} high-quality SEO content topic suggestion${count === 1 ? '' : 's'}.
 
 Project context:
 - Business name: ${context.name || 'Selected project'}
@@ -380,11 +427,14 @@ Project context:
 - Category: ${context.category || 'Not provided'}
 - Location: ${context.location || 'Not provided'}
 - Tone: ${context.tone || 'Professional'}
+- Content type: ${formatContentType(context.contentType)}
 - Business context: ${context.businessContext || 'Not provided'}
 - Target tags: ${context.targetTags || 'Not provided'}
 - Exclude these titles: ${excludeTitles.length ? excludeTitles.join(' | ') : 'None'}
 
-Each topic must be search-intent driven, specific, non-duplicative, and useful for an SEO blog calendar.
+${strictContentTypeContract(context.contentType)}
+Content type guidance: ${contentTypeGuidance(context.contentType)}
+Each topic must be search-intent driven, specific, non-duplicative, and useful only for the selected content type.
 Do not repeat, closely paraphrase, or reuse the same angle as any excluded title.
 If an excluded title covers a topic, choose a clearly different keyword, search intent, and article angle.
 
@@ -402,12 +452,15 @@ Return JSON:
 `.trim();
 
 const buildArticlePrompt = (context: ProjectContext, suggestion: TopicSuggestion) => `
-Generate one complete SEO-optimized blog article for the selected project.
+Generate one complete SEO-optimized content item for the selected project.
 
 Content-writing rules:
 ${contentWritingInstructions}
+${strictContentTypeContract(context.contentType)}
+Selected content type: ${formatContentType(context.contentType)}
+Content type guidance: ${contentTypeGuidance(context.contentType)}
 
-Article topic:
+Content topic:
 - Title: ${suggestion.title}
 - Short description: ${suggestion.description}
 - Primary keyword: ${suggestion.primaryKeyword}
@@ -420,6 +473,7 @@ Project context:
 - Category: ${context.category || 'Not provided'}
 - Location: ${context.location || 'Not provided'}
 - Tone: ${context.tone || 'Professional'}
+- Content type: ${formatContentType(context.contentType)}
 - Business context: ${context.businessContext || 'Not provided'}
 - Target tags: ${context.targetTags || 'Not provided'}
 
@@ -524,6 +578,7 @@ Deno.serve(async (req) => {
       category: project.category || '',
       location: String(body.locationOverride || project.target_location || ''),
       tone: project.tone || 'Professional',
+      contentType: resolveContentType(body.content_type || body.contentType || project.content_type),
       businessContext: project.business_context || project.settings_metadata?.business_context || '',
       targetTags,
     };
@@ -584,7 +639,7 @@ Deno.serve(async (req) => {
           .from('content_posts')
           .insert({
             project_id: projectId,
-            content_type: 'blog',
+            content_type: context.contentType,
             category_ids: categoryIds,
             title_en: title,
             title_ar: String(result.title_ar || ''),
@@ -602,6 +657,7 @@ Deno.serve(async (req) => {
             content_blocks_ar: contentBlocksAr,
             generation_metadata: {
               source: 'auto-generate-content',
+              contentType: context.contentType,
               primaryKeyword: suggestion.primaryKeyword || '',
               seoPotential: suggestion.seoPotential || '',
               categoryIds,

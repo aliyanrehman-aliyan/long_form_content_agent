@@ -63,6 +63,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects, activeProjectId, 
       categories: ['Uncategorized'],
       tags: formData.tags.split(',').map(t => t.trim()).filter(t => t !== ''),
       createdAt: new Date().toISOString().split('T')[0],
+      contentType: 'blog_article',
       publishingMode: 'supabase_shared'
     };
 

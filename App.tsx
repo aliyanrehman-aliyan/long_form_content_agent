@@ -14,7 +14,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { supabase } from './supabaseClient';
-import { Tab, Project, Post, Category } from './types';
+import { Tab, Project, Post, Category, ContentType } from './types';
 import Posts from './pages/Posts';
 import ProjectsPage from './pages/Projects';
 import Editor from './pages/Editor';
@@ -23,6 +23,7 @@ import CategoriesPage from './pages/Categories';
 import CategoryDetail from './pages/CategoryDetail';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import Demo from './pages/Demo';
 import AutoGenerate from './pages/AutoGenerate';
 
 const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';
@@ -35,7 +36,10 @@ const getTabFromPath = (path: string): Tab => {
       return 'Analytics';
     case '/settings':
       return 'Settings';
+    case '/demo':
+      return 'Demo';
     case '/auto-generate':
+    case '/customer-workspace/auto-generate':
       return 'AutoGenerate';
     case '/customer-workspace/categories':
       return 'Categories';
@@ -58,8 +62,10 @@ const getRouteForTab = (tab: Tab) => {
       return '/analytics';
     case 'Settings':
       return '/settings';
+    case 'Demo':
+      return '/demo';
     case 'AutoGenerate':
-      return '/auto-generate';
+      return '/customer-workspace/auto-generate';
     case 'Categories':
     case 'CategoryDetail':
       return '/customer-workspace/categories';
@@ -78,6 +84,19 @@ const toPublishingMode = (deliveryMethod: string | null | undefined): Project['p
 const toDeliveryMethodColumn = (publishingMode: Project['publishingMode']) =>
   publishingMode === 'email_delivery' ? 'email' : 'supabase_shared';
 
+const allowedContentTypes: ContentType[] = [
+  'blog_article',
+  'faq',
+  'landing_page_content',
+  'service_page',
+  'product_description',
+  'case_study',
+  'general_content',
+];
+
+const toContentType = (value: string | null | undefined): ContentType =>
+  allowedContentTypes.includes(value as ContentType) ? value as ContentType : 'blog_article';
+
 const mapProject = (p: any): Project => ({
   id: p.id,
   name: p.name,
@@ -85,6 +104,7 @@ const mapProject = (p: any): Project => ({
   niche: p.niche || '',
   tone: p.tone || 'Professional',
   location: p.target_location || '',
+  contentType: toContentType(p.content_type),
   category: p.category || '',
   tags: Array.isArray(p.target_tags) ? p.target_tags : [],
   createdAt: p.created_at,
@@ -258,17 +278,18 @@ const App: React.FC = () => {
     { id: 'Posts', icon: FileText, label: 'Customer Workspace' },
     { id: 'Analytics', icon: BarChart3, label: 'Analytics' },
     { id: 'Settings', icon: SettingsIcon, label: 'Settings' },
-    { id: 'AutoGenerate', icon: Sparkles, label: 'Auto Generate' },
+    { id: 'Demo', icon: FileText, label: 'Demo' },
   ];
 
   const workspaceItems = [
-    { id: 'Posts', icon: FileText, label: 'Posts' },
+    { id: 'Posts', icon: FileText, label: 'Content' },
     { id: 'Categories', icon: Layers, label: 'Categories' },
     { id: 'Calendar', icon: CalendarIcon, label: 'Calendar' },
+    { id: 'AutoGenerate', icon: Sparkles, label: 'Auto Generate' },
   ];
 
   const isWorkspaceTab = (tab: Tab) =>
-    tab === 'Posts' || tab === 'Categories' || tab === 'CategoryDetail' || tab === 'Calendar' || tab === 'Editor';
+    tab === 'Posts' || tab === 'Categories' || tab === 'CategoryDetail' || tab === 'Calendar' || tab === 'AutoGenerate' || tab === 'Editor';
 
   const navigateTo = (tab: Tab, route = getRouteForTab(tab)) => {
     setActiveTab(tab);
@@ -284,6 +305,7 @@ const App: React.FC = () => {
       niche: newProj.niche,
       tone: newProj.tone,
       target_location: newProj.location,
+      content_type: newProj.contentType || 'blog_article',
       category: newProj.category || null,
       target_tags: newProj.tags || [],
       delivery_method: toDeliveryMethodColumn(newProj.publishingMode || 'supabase_shared'),
@@ -317,6 +339,7 @@ const App: React.FC = () => {
       niche: updated.niche,
       tone: updated.tone,
       target_location: updated.location,
+      content_type: updated.contentType || 'blog_article',
       category: updated.category || null,
       target_tags: updated.tags || [],
       delivery_method: toDeliveryMethodColumn(updated.publishingMode || 'supabase_shared'),
@@ -366,7 +389,7 @@ const App: React.FC = () => {
     const payload = {
   project_id: selectedProjectId,
   category_ids: post.categoryIds || [],
-      content_type: 'blog',
+      content_type: activeProject?.contentType || 'blog_article',
       title_en: post.title,
       title_ar: post.titleAr,
       slug: post.slug,
@@ -425,7 +448,7 @@ const App: React.FC = () => {
     );
 
   const renderContent = () => {
-    if (!activeProject && activeTab !== 'Projects' && activeTab !== 'Settings' && activeTab !== 'AutoGenerate') {
+    if (!activeProject && activeTab !== 'Projects' && activeTab !== 'Settings' && activeTab !== 'Demo' && activeTab !== 'AutoGenerate') {
       return renderEmptyProjectState();
     }
 
@@ -438,6 +461,8 @@ const App: React.FC = () => {
         return <Analytics project={activeProject!} posts={posts} categories={categories} />;
       case 'Settings':
         return <Settings project={activeProject} onUpdate={handleUpdateProject} onCreate={(project) => handleAddProject(project, { navigateAfterCreate: false })} />;
+      case 'Demo':
+        return <Demo />;
       case 'AutoGenerate':
         return <AutoGenerate project={activeProject} />;
       case 'Categories':

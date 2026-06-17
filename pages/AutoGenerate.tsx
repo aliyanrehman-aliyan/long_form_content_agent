@@ -151,6 +151,7 @@ const AutoGenerate: React.FC<AutoGenerateProps> = ({ project }) => {
     const body = {
       projectId: project?.id,
       targetSchema: supabaseSchema,
+      content_type: project?.contentType || 'blog_article',
       nicheOverride: nicheOverride.trim() || undefined,
       locationOverride: locationOverride.trim() || undefined,
       ...payload
@@ -159,6 +160,7 @@ const AutoGenerate: React.FC<AutoGenerateProps> = ({ project }) => {
     console.info('[auto-generate-content] invoking', {
       action: payload.action,
       projectId: project?.id,
+      content_type: project?.contentType || 'blog_article',
       suggestionCount: Array.isArray(payload.suggestions) ? payload.suggestions.length : undefined,
     });
 

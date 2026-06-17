@@ -2,6 +2,7 @@
 export type PostStatus = 'Draft' | 'Published' | 'Scheduled';
 export type PublishingMode = 'supabase_shared' | 'email_delivery';
 export type CategoryStatus = 'Active' | 'Hidden';
+export type ContentType = 'blog_article' | 'faq' | 'landing_page_content' | 'service_page' | 'product_description' | 'case_study' | 'general_content';
 
 export type BlockType = 'heading' | 'paragraph' | 'bullet_list' | 'image' | 'quote';
 
@@ -48,6 +49,7 @@ export interface Project {
   niche: string;
   tone: string;
   location: string;
+  contentType: ContentType;
   category?: string;
   categories?: string[]; 
   tags?: string[];
@@ -79,4 +81,4 @@ export interface MediaAsset {
   usedInPosts: string[];
 }
 
-export type Tab = 'Projects' | 'Posts' | 'Categories' | 'CategoryDetail' | 'Calendar' | 'Editor' | 'Analytics' | 'Settings' | 'AutoGenerate';
+export type Tab = 'Projects' | 'Posts' | 'Categories' | 'CategoryDetail' | 'Calendar' | 'Editor' | 'Analytics' | 'Settings' | 'Demo' | 'AutoGenerate';

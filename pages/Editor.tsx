@@ -45,6 +45,26 @@ interface SuggestedTopic {
   icon: any;
 }
 
+const formatContentType = (value: Project["contentType"]) => ({
+  blog_article: "Blog Article",
+  faq: "FAQ",
+  landing_page_content: "Landing Page Content",
+  service_page: "Service Page",
+  product_description: "Product Description",
+  case_study: "Case Study",
+  general_content: "General Content",
+}[value] || "Blog Article");
+
+const contentTypeStrictGuidance = (value: Project["contentType"]) => ({
+  blog_article: "Generate only a long-form blog article. Do not generate FAQ-only, landing page, service page, product description, case study, or generic page copy.",
+  faq: "Generate only FAQ-style content with question headings and practical answers. Do not generate a blog article or any other mixed format.",
+  landing_page_content: "Generate only landing page content with conversion-focused sections. Do not generate a blog article, FAQ-only page, service page, product description, or case study.",
+  service_page: "Generate only service page content explaining the service, audience, benefits, process, FAQ, and next-step CTA.",
+  product_description: "Generate only product description content with product overview, benefits, features, use cases, FAQ, and buying guidance.",
+  case_study: "Generate only case study content with background, challenge, solution, implementation, results, lessons, FAQ, and conclusion.",
+  general_content: "Generate only general informational content that fits the topic and project context. Do not switch into another content type.",
+}[value] || "Generate only content matching the selected content type.");
+
 const buildContentGenerationPrompt = ({
   title,
   project,
@@ -52,13 +72,13 @@ const buildContentGenerationPrompt = ({
   title: string;
   project: Project;
 }) => `
-You are generating a complete blog post for the selected project.
+You are generating a complete content item for the selected project.
 
 Reusable content-writing skill instructions:
 ${contentWritingSkill}
 
-Use the skill instructions as the single source of truth for content structure
-and writing style. Apply them to the generated English and Arabic blog content.
+Use the skill instructions for writing style and FAQ formatting where applicable.
+The selected content type below is the highest-priority structure rule.
 
 Post title: ${title}
 Project context:
@@ -66,9 +86,18 @@ Project context:
 - Niche: ${project.niche}
 - Location: ${project.location}
 - Tone: ${project.tone}
+- Content type: ${formatContentType(project.contentType)}
+
+Strict content type contract:
+- Selected content_type: ${project.contentType}
+- Generate only ${formatContentType(project.contentType)} content.
+- ${contentTypeStrictGuidance(project.contentType)}
+- Do not mix, combine, or switch to another content type.
+- If the topic could work as another format, still produce only ${formatContentType(project.contentType)} content.
 
 Output requirements:
 - Treat the post title as the H1.
+- Shape every generated section as the selected content type while keeping it clear and structured.
 - Use generated heading blocks for H2/H3-style sections.
 - Include short readable paragraphs.
 - Include bullet_list blocks where helpful.
@@ -330,6 +359,8 @@ const Editor: React.FC<EditorProps> = ({ post, project, categories, onSave, onCa
       const data = await callEdgeFunction("pollinations-generate", {
         niche: targetNiche,
         location: targetLocation,
+        content_type: project.contentType,
+        contentType: project.contentType,
         excludeTitles: suggestedTopics.map(t => t.prompt)
       });
       
@@ -412,6 +443,8 @@ const Editor: React.FC<EditorProps> = ({ post, project, categories, onSave, onCa
 
       const result = await callEdgeFunction("pollinations-generate-post", {
         title,
+        content_type: project.contentType,
+        contentType: project.contentType,
         prompt: contentGenerationPrompt,
         instructions: contentWritingSkill,
         project: promptProject,

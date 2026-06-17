@@ -6,6 +6,7 @@ import {
   Building2,
   CheckCircle2,
   Database,
+  FileText,
   Globe,
   Loader2,
   Mail,
@@ -17,7 +18,7 @@ import {
   Target,
   Type
 } from 'lucide-react';
-import { Project } from '../types';
+import { ContentType, Project } from '../types';
 import InfoTooltip from '../components/InfoTooltip';
 
 interface SettingsProps {
@@ -27,12 +28,22 @@ interface SettingsProps {
 }
 
 const TONE_OPTIONS = ['Professional', 'Casual', 'Witty', 'Educational'];
+const CONTENT_TYPE_OPTIONS: Array<{ value: ContentType; label: string }> = [
+  { value: 'blog_article', label: 'Blog Article' },
+  { value: 'faq', label: 'FAQ' },
+  { value: 'landing_page_content', label: 'Landing Page Content' },
+  { value: 'service_page', label: 'Service Page' },
+  { value: 'product_description', label: 'Product Description' },
+  { value: 'case_study', label: 'Case Study' },
+  { value: 'general_content', label: 'General Content' },
+];
 
 const getInitialFormData = (project: Project | null) => ({
   name: project?.name || '',
   websiteUrl: project?.websiteUrl || '',
   niche: project?.niche || '',
   location: project?.location || '',
+  contentType: project?.contentType || 'blog_article',
   category: project?.category || '',
   tone: project?.tone || 'Professional',
   tags: project?.tags?.join(', ') || '',
@@ -75,14 +86,15 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
     e.preventDefault();
     setErrorMsg(null);
 
-    if (!formData.name.trim() || !formData.websiteUrl.trim()) {
+    if (!formData.websiteUrl.trim()) {
       setActiveStep('details');
-      setErrorMsg('Please complete the project name and website URL.');
+      setErrorMsg('Please complete the website URL.');
       return;
     }
 
+    let fallbackProjectName = 'New Project';
     try {
-      new URL(formData.websiteUrl);
+      fallbackProjectName = new URL(formData.websiteUrl).hostname.replace(/^www\./, '') || fallbackProjectName;
     } catch {
       setActiveStep('details');
       setErrorMsg('Please enter a valid website URL.');
@@ -95,16 +107,23 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
       return;
     }
 
+    if (!formData.contentType) {
+      setActiveStep('details');
+      setErrorMsg('Please select a content type.');
+      return;
+    }
+
     setIsSaving(true);
     setSaved(false);
 
     const updatedProject: Project = {
       ...(project || {}),
       id: project?.id || '',
-      name: formData.name.trim(),
+      name: formData.name.trim() || project?.name || fallbackProjectName,
       websiteUrl: formData.websiteUrl.trim(),
       niche: formData.niche.trim(),
       location: formData.location.trim() || 'Dubai, UAE',
+      contentType: formData.contentType as ContentType,
       category: formData.category.trim(),
       tone: formData.tone,
       tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
@@ -319,11 +338,7 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
                 </div>
 
                 <div className={`${denseCard} space-y-3`}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      {renderFieldLabel('Project Name', 'The display name used to identify this project across the workspace.')}
-                      <input required className={denseInputClass} value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
-                    </div>
+                  <div className="grid grid-cols-1 gap-3">
                     <div className="space-y-1">
                       {renderFieldLabel('Website URL', 'The public website URL associated with this project and its content.')}
                       <div className="relative">
@@ -359,7 +374,21 @@ const Settings: React.FC<SettingsProps> = ({ project, onUpdate, onCreate }) => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="space-y-1">
+                      {renderFieldLabel('Content Type', 'The format AI should follow when generating content for this project.')}
+                      <div className="relative">
+                        <FileText className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <select
+                          required
+                          className={`${denseInputClass} pl-10 appearance-none`}
+                          value={formData.contentType}
+                          onChange={e => setFormData({ ...formData, contentType: e.target.value as ContentType })}
+                        >
+                          {CONTENT_TYPE_OPTIONS.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
+                      </div>
+                    </div>
                     <div className="space-y-1">
                       {renderFieldLabel('Category', 'The default content category or topic group for this project.')}
                       <input className={denseInputClass} placeholder="e.g. Healthcare, Real Estate, SaaS..." value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} />
